@@ -39,11 +39,13 @@ jobs:
           name: accordion-hero-slider-PR-${{ github.event.pull_request.number }}
           path: releases/*.zip
 
-      - name: Create Release (Tag Only)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Create Release
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         uses: softprops/action-gh-release@v2
         with:
           files: releases/accordion-hero-slider-v${{ env.VERSION }}.zip
-          body: "Official release version ${{ env.VERSION }}"
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('v{0}', env.VERSION) }}
+          name: Release ${{ env.VERSION }}
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
