@@ -1,0 +1,54 @@
+name: Build and Release Plugin
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get Plugin Version
+        id: get_version
+        run: |
+          VERSION=$(grep "Version:" accordion-hero-slider/accordion-hero-slider.php | awk '{print $NF}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=version::$VERSION"
+
+      - name: Create ZIP
+        run: |
+          mkdir -p releases
+          zip -r releases/accordion-hero-slider.zip accordion-hero-slider -x "*.DS_Store*" "*.git*"
+
+      - name: Rename ZIP for PR (Pull Request only)
+        if: github.event_name == 'pull_request'
+        run: |
+          mv releases/accordion-hero-slider.zip releases/accordion-hero-slider-PR-${{ github.event.pull_request.number }}.zip
+
+      - name: Rename ZIP for Release (Push to Tag or Main)
+        if: github.event_name == 'push'
+        run: |
+          cp releases/accordion-hero-slider.zip releases/accordion-hero-slider-v${{ env.VERSION }}.zip
+
+      - name: Upload Build Artifact (PR Only)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: accordion-hero-slider-PR-${{ github.event.pull_request.number }}
+          path: releases/*.zip
+
+      - name: Create Release (Tag Only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: releases/accordion-hero-slider-v${{ env.VERSION }}.zip
+          body: "Official release version ${{ env.VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
