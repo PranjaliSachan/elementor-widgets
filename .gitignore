@@ -19,7 +19,6 @@ ehthumbs.db
 Thumbs.db
 
 # Plugin specific
-releases/*.zip
 node_modules/
 .vscode/
 .idea/

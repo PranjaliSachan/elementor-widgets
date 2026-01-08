@@ -8,12 +8,17 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necessary to push back to the repo
 
       - name: Get Plugin Version
         id: get_version
@@ -31,6 +36,15 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           mv releases/accordion-hero-slider-v${{ env.VERSION }}.zip releases/accordion-hero-slider-v${{ env.VERSION }}-PR-${{ github.event.pull_request.number }}.zip
+
+      - name: Commit and Push ZIP (Main Branch only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add releases/*.zip
+          git commit -m "chore: build version v${{ env.VERSION }} [skip ci]" || echo "No changes to commit"
+          git push origin main
 
       - name: Upload Build Artifact (PR Only)
         if: github.event_name == 'pull_request'
