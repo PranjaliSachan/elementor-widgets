@@ -1,26 +1,25 @@
-# Accordion Hero Slider - Project Repository
+# Custom Elementor Widgets Repository
 
-This repository contains the source code for the **Accordion Hero Slider** Elementor widget.
+This repository is a collection of premium, high-fidelity custom widgets for **Elementor**. Each widget is built as a standalone WordPress plugin for maximum portability and ease of use.
 
 ## 📂 Repository Structure
 
-- `accordion-hero-slider/`: The main plugin source code.
+- `accordion-hero-slider/`: A premium horizontal accordion hero slider with industry-focused design.
 - `.github/workflows/`: GitHub Actions for automated builds and releases.
 - `releases/`: (Automated) Directory where the latest plugin ZIP files are stored.
-- `build-zip.sh`: Shell script to manually package the plugin.
+- `build-zip.sh`: Shell script to manually package specific widgets.
 
 ## 🛠 For Developers
 
-### Building the Plugin
-To package the plugin into a ZIP file locally, run:
+### Building a Widget
+To package a specific widget into a ZIP file locally, run the build script. By default, it targets the `accordion-hero-slider`.
 ```bash
 ./build-zip.sh
 ```
-This will create `releases/accordion-hero-slider.zip`.
 
 ### GitHub Actions
-- **PR Build**: Every Pull Request automatically generates a versioned ZIP file for testing.
-- **Release**: Merging to `main` (or pushing a tag) will automatically create a new GitHub Release with the plugin ZIP attached.
+- **PR Build**: Every Pull Request automatically generates versioned ZIP files for the modified widgets.
+- **Release**: Merging to `main` (or pushing a version tag like `v*`) will automatically create a new GitHub Release with the corresponding plugin ZIP attached.
 
 ## 📝 License
-Licensed under GPL v2 or later.
+All widgets in this repository are licensed under GPL v2 or later.
